@@ -5,12 +5,16 @@ description = "Add your description here"
 authors = [
     { name = "ardririy", email = "hynnkgw27@gmail.com" }
 ]
-dependencies = []
+dependencies = [
+    "discord>=2.3.2",
+    "python-dotenv>=1.0.0",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 
 [project.scripts]
 hello = "adry_discord_toolbox:hello"
+main = "python src/adry_discord_toolbox/main.py"
 
 [build-system]
 requires = ["hatchling"]
