@@ -1,0 +1,27 @@
+[project]
+name = "adry-discord-toolbox"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "ardririy", email = "hynnkgw27@gmail.com" }
+]
+dependencies = []
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[project.scripts]
+hello = "adry_discord_toolbox:hello"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/adry_discord_toolbox"]
