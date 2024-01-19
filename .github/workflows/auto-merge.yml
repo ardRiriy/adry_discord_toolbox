@@ -1,0 +1,20 @@
+name: auto deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+    - name: リポジトリのチェックアウト
+      uses: actions/checkout@v2
+
+    - name: main から product へマージ
+      run: |
+        git fetch origin
+        git checkout product
+        git merge origin/main
+        git push origin product
