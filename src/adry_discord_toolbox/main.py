@@ -21,5 +21,9 @@ async def on_ready():
 async def ping_pong(interaction: discord.Interaction):
     await interaction.response.send_message("pong")
 
+@tree.command(name='deploy', description="botを更新する")
+async def deploy(interaction: discord.Interaction):
+    await interaction.response.send_message("再起動します")
+    os.system('sh update.sh')
 
 client.run(os.environ["DISCORD_TOKEN"])
