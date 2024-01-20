@@ -4,11 +4,22 @@ import discord
 from discord import app_commands
 from dotenv import load_dotenv
 
+from google.oauth2 import service_account
+from googleapiclient.errors import HttpError
+from googleapiclient.discovery import build
+
 load_dotenv()
 
+# discordの初期設定
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
+
+# Google calenderのアカウント設定
+creds = service_account.Credentials.from_service_account_file('discord-bot-key.json')
+service = build('calendar', 'v3', credentials=creds)
+
+calendar_id = 'discord-bot@discord-bot-411721.iam.gserviceaccount.com'
 
 @client.event
 async def on_ready():
