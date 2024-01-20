@@ -1,1 +1,0 @@
-web: python src/adry_discord_toolbox/main.py
