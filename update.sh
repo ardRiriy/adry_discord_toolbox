@@ -6,4 +6,5 @@ pkill -f src/adry_discord_toolbox/main.py
 git pull origin main
 
 # ボットを再起動
+rye sync
 nohup python src/adry_discord_toolbox/main.py &
