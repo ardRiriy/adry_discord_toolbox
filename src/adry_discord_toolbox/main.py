@@ -1,9 +1,12 @@
 import os
 import datetime
+
 import parse
 
 import discord
 from discord import *
+from discord.ext import tasks
+
 from dotenv import load_dotenv
 
 from google.oauth2 import service_account
@@ -21,8 +24,9 @@ tree = app_commands.CommandTree(client)
 creds = service_account.Credentials.from_service_account_file('google-calendar-env-key.json')
 service = build('calendar', 'v3', credentials=creds)
 
-calendar_id = 'hynnkgw2525@gmail.com'
+calendar_id = os.environ['GOOGLE_CALENDAR_ID']
 
+calendar_notify_time = datetime.time(hour=7, minute=0)
 
 @client.event
 async def on_ready():
@@ -30,6 +34,8 @@ async def on_ready():
     activity_message = "このbotはテスト運用されています"
     await client.change_presence(activity=discord.Game(activity_message))
     await tree.sync()
+    notify.start()
+
 
 @tree.command(name='ping', description="応答確認")
 async def ping_pong(interaction: discord.Interaction):
@@ -68,5 +74,45 @@ async def add(interaction: discord.Interaction, summary: str ,start_date: str, e
         print(error_message)
         await interaction.response.send_message(error_message)
 
+# @tasks.loop(time=calendar_notify_time)
+@tasks.loop(seconds=20)
+async def notify():
+    # カレンダーから情報を取得する
+    today = datetime.datetime.now()
+    tomorrow = today + datetime.timedelta(days=1)
+
+    start = today.strftime('%Y-%m-%dT07:00:00+09:00')
+    end = tomorrow.strftime('%Y-%m-%dT07:00:00+09:00')
+
+    notify_channel = client.get_channel(int(os.environ['NOTIFY_CHANNEL']))
+
+    try:
+        res = service.events().list(
+            calendarId=calendar_id,
+            timeMin=start,
+            timeMax=end,
+            orderBy='startTime',
+            singleEvents=True
+        ).execute()
+        events = res.get('items', None)
+
+        ret = []
+
+        if not events:
+            ret.append("今日の予定はありません！良い一日を☀")
+        else:
+            ret.append("今日の予定は以下のとおりです")
+            ret.append("-----------------------")
+            for event in events:
+                title = event['summary']
+                start = datetime.datetime.strptime(event['start']['dateTime'], '%Y-%m-%dT%H:%M:%S%z').strftime('%d日 %H:%M')
+                ret.append(f"{start}: {title}")
+            ret.append("-----------------------")
+            ret.append("良い一日を☀")
+
+        await notify_channel.send('\n'.join(ret))
+    except HttpError as error:
+        error_message = f'An error occurred: {error}'
+        await notify_channel.send(error_message)
 
 client.run(os.environ["DISCORD_TOKEN"])
