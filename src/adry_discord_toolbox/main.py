@@ -74,8 +74,7 @@ async def add(interaction: discord.Interaction, summary: str ,start_date: str, e
         print(error_message)
         await interaction.response.send_message(error_message)
 
-# @tasks.loop(time=calendar_notify_time)
-@tasks.loop(seconds=20)
+@tasks.loop(time=calendar_notify_time)
 async def notify():
     # カレンダーから情報を取得する
     today = datetime.datetime.now()
