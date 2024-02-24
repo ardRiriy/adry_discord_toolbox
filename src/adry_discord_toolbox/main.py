@@ -26,7 +26,7 @@ service = build('calendar', 'v3', credentials=creds)
 
 calendar_id = os.environ['GOOGLE_CALENDAR_ID']
 
-calendar_notify_time = datetime.time(hour=7, minute=0)
+calendar_notify_time = datetime.time(hour=22, minute=0)
 
 @client.event
 async def on_ready():
