@@ -77,7 +77,7 @@ async def add(interaction: discord.Interaction, summary: str ,start_date: str, e
 @tasks.loop(time=calendar_notify_time)
 async def notify():
     # カレンダーから情報を取得する
-    today = datetime.datetime.now()
+    today = datetime.datetime.now() + datetime.timedelta(days=1)
     tomorrow = today + datetime.timedelta(days=1)
 
     start = today.strftime('%Y-%m-%dT07:00:00+09:00')
